@@ -7,6 +7,7 @@ from retry_requests import retry
 import hopsworks
 import openmeteo_requests
 from datetime import datetime
+from confluent_kafka import Producer
 
 # Example function to fetch data from Open-Meteo
 def fetch_openmeteo_data():
@@ -72,7 +73,8 @@ def process_openmeteo_data(df: pd.DataFrame) -> pd.DataFrame:
 
 def store_features_in_hopsworks(df: pd.DataFrame):
     # Login to Hopsworks
-    project = hopsworks.login(project="TenPearls82")
+    # project = hopsworks.login(project="TenPearls82")
+    project = hopsworks.login(api_key_value= "2EpVtPZvfyir2ZHe.Xq5Zf52NZvrcFMazBANKnavDajjwl759POapcm1FijsZhoDFqhKeY2zu331fo82i")
     fs = project.get_feature_store()
 
     # Create or get the feature group

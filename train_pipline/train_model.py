@@ -13,7 +13,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 
 def train_pipeline():
-    project = hopsworks.login(project="TenPearls82")  # <-- Replace
+    project = hopsworks.login(api_key_value= "2EpVtPZvfyir2ZHe.Xq5Zf52NZvrcFMazBANKnavDajjwl759POapcm1FijsZhoDFqhKeY2zu331fo82i")  # <-- Replace
     fs = project.get_feature_store()
 
     # Retrieve feature group

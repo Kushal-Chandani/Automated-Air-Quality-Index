@@ -10,7 +10,7 @@ from datetime import datetime
 
 def load_model():
     # Log in to Hopsworks
-    project = hopsworks.login(project="TenPearls82")  # <-- Replace
+    project = hopsworks.login(api_key_value= "2EpVtPZvfyir2ZHe.Xq5Zf52NZvrcFMazBANKnavDajjwl759POapcm1FijsZhoDFqhKeY2zu331fo82i")  # <-- Replace
     mr = project.get_model_registry()
 
     # Get the model named "openmeteo_pm2_5_model"
@@ -24,7 +24,7 @@ def load_model():
 
 def get_latest_data(num_records=10):
     # Fetch some recent data from the Feature Store
-    project = hopsworks.login(project="TenPearls82")  # <-- Replace
+    project = hopsworks.login(api_key_value= "2EpVtPZvfyir2ZHe.Xq5Zf52NZvrcFMazBANKnavDajjwl759POapcm1FijsZhoDFqhKeY2zu331fo82i")  # <-- Replace
     fs = project.get_feature_store()
     fg = fs.get_feature_group("openmeteo_aq_feature_group", version=1)
     df = fg.read()
