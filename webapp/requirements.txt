@@ -3,3 +3,4 @@ hopsworks
 pandas
 joblib
 scikit-learn
+plotly
