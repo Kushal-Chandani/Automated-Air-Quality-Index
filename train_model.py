@@ -12,22 +12,45 @@ from sklearn.neural_network import MLPRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 
+def calculate_aqi(pm25):
+    """
+    Calculate the US AQI for a given PM2.5 concentration using EPA breakpoints.
+    """
+    breakpoints = [
+        (0.0, 12.0, 0, 50),
+        (12.1, 35.4, 51, 100),
+        (35.5, 55.4, 101, 150),
+        (55.5, 150.4, 151, 200),
+        (150.5, 250.4, 201, 300),
+        (250.5, 350.4, 301, 400),
+        (350.5, 500.4, 401, 500),
+    ]
+    for c_lo, c_hi, i_lo, i_hi in breakpoints:
+        if c_lo <= pm25 <= c_hi:
+            aqi = ((i_hi - i_lo) / (c_hi - c_lo)) * (pm25 - c_lo) + i_lo
+            return round(aqi)
+    return None
+
 def train_pipeline():
-    project = hopsworks.login(api_key_value= "2EpVtPZvfyir2ZHe.Xq5Zf52NZvrcFMazBANKnavDajjwl759POapcm1FijsZhoDFqhKeY2zu331fo82i")  # <-- Replace
+    # Login and retrieve feature store
+    project = hopsworks.login(api_key_value="2EpVtPZvfyir2ZHe.Xq5Zf52NZvrcFMazBANKnavDajjwl759POapcm1FijsZhoDFqhKeY2zu331fo82i")
     fs = project.get_feature_store()
 
-    # Retrieve feature group
+    # Read the feature group
     fg = fs.get_feature_group(name="openmeteo_aq_feature_group", version=1)
     df = fg.read()
     print("Data fetched from Feature Store:")
     print(df.head())
 
-    # Target: pm2_5
+    # Ensure PM2.5 is present
     if 'pm2_5' not in df.columns:
         print("No 'pm2_5' column found in the DataFrame.")
         return
 
-    # Define feature columns
+    # Calculate US AQI from PM2.5
+    df['aqi'] = df['pm2_5'].apply(calculate_aqi)
+
+    # Define your feature set
     features = [
         'day',
         'month',
@@ -38,16 +61,18 @@ def train_pipeline():
         'sulphur_dioxide'
     ]
 
-    # Drop rows with missing data
-    df = df.dropna(subset=['pm2_5'] + features)
+    # Drop rows with missing values in features or target
+    df = df.dropna(subset=features + ['aqi'])
 
     X = df[features]
-    y = df['pm2_5']
+    y = df['aqi']
 
+    # Train/test split
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.2, random_state=42
     )
 
+    # Define models to evaluate
     models = {
         "RandomForest": RandomForestRegressor(n_estimators=100, random_state=42),
         "Ridge": Ridge(),
@@ -63,12 +88,13 @@ def train_pipeline():
     best_score = float("inf")
     best_metrics = {}
 
+    # Train and evaluate each model
     for name, model in models.items():
         model.fit(X_train, y_train)
         preds = model.predict(X_test)
 
         mse = mean_squared_error(y_test, preds)
-        rmse = mse**0.5
+        rmse = mse ** 0.5
         mae = mean_absolute_error(y_test, preds)
         r2 = r2_score(y_test, preds)
 
@@ -82,18 +108,18 @@ def train_pipeline():
 
     print(f"\nBest Model: {best_model_name} with RMSE: {best_score:.3f}")
 
-    # Store best model in Hopsworks Model Registry
+    # Save the best model to Hopsworks Model Registry
     model_registry = project.get_model_registry()
-    model_dir = "openmeteo_model"
+    model_dir = "openmeteo_aqi_model"
     os.makedirs(model_dir, exist_ok=True)
 
     joblib.dump(best_model, f"{model_dir}/model.joblib")
 
     model_meta = model_registry.python.create_model(
-        name="openmeteo_pm2_5_model",
+        name="openmeteo_aqi_model",
         metrics=best_metrics,
         model_schema=None,
-        description=f"Best model is {best_model_name} with RMSE {best_score:.3f}"
+        description=f"Best model is {best_model_name} with RMSE {best_score:.3f} for US AQI prediction"
     )
     model_meta.save(model_dir)
 

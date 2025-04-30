@@ -26,7 +26,7 @@ def fetch_openmeteo_data():
             "nitrogen_dioxide",
             "sulphur_dioxide"
         ],
-        "start_date": "2024-04-04",
+        "start_date": "2015-01-01",
         "end_date": datetime.utcnow().strftime("%Y-%m-%d")
     }
 
