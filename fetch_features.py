@@ -7,7 +7,6 @@ from retry_requests import retry
 import hopsworks
 import openmeteo_requests
 from datetime import datetime
-from confluent_kafka import Producer
 
 # Example function to fetch data from Open-Meteo
 def fetch_openmeteo_data():

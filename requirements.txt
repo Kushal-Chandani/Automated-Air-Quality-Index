@@ -9,5 +9,5 @@ hopsworks
 pandas
 plotly
 matplotlib
-confluent_kafka
+
 
