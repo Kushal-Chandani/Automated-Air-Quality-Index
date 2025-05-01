@@ -1,7 +1,7 @@
 
-# Pearls AQI Predictor
+# 10Pearls AQI Predictor
 
-The Pearls AQI Predictor is a serverless application that forecasts the Air Quality Index (AQI) for Karachi, Pakistan, over the next 72 hours. It fetches air quality data from the Open-Meteo API, processes it using a feature pipeline, trains machine learning models, and visualizes predictions through an interactive Streamlit dashboard. The project is automated with GitHub Actions for hourly data updates and daily model retraining, and it is containerized using Docker for scalability.
+The 10Pearls AQI Predictor is a serverless application that forecasts the Air Quality Index (AQI) for Karachi, Pakistan, over the next 72 hours. It fetches air quality data from the Open-Meteo API, processes it using a feature pipeline, trains machine learning models, and visualizes predictions through an interactive Streamlit dashboard. The project is automated with GitHub Actions for hourly data updates and daily model retraining, and it is containerized using Docker for scalability.
 
 This README provides instructions to run the project either locally or using Docker, including how to set up your Hopsworks API key and execute necessary commands.
 
