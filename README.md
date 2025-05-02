@@ -95,11 +95,6 @@ Open your browser and navigate to [http://localhost:8501](http://localhost:8501)
 This option uses Docker to containerize the application, ensuring a consistent environment.
 
 #### Step 1: Clone the Repository
-```bash
-git clone https://github.com/your-username/pearls-aqi-predictor.git
-cd pearls-aqi-predictor
-```
-Replace `your-username` with your GitHub username or the repository URL.
 
 #### Step 2: Configure Hopsworks API Key
 
